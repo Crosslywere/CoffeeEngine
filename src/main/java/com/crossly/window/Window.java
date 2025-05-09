@@ -2,7 +2,10 @@ package com.crossly.window;
 
 import com.crossly.input.Input;
 import com.crossly.interfaces.Application;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWScrollCallback;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -13,9 +16,10 @@ public class Window {
     private final long window;
     private boolean vsync = false;
 
-    private final Input input = new Input();
+    private final Input input;
 
     public Window() {
+        input = new Input(this);
         if (!glfwInit())
             throw new RuntimeException("glfwInit failed!");
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -37,28 +41,32 @@ public class Window {
                 input.setKeyPressed(key, action >= GLFW_PRESS);
             }
         });
-//        glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback() {
-//            @Override
-//            public void invoke(long window, int button, int action, int mods) {
-//                input.setButtonPressed(button, action >= GLFW_PRESS);
-//            }
-//        });
-//        glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
-//            @Override
-//            public void invoke(long window, double x, double y) {
-//                input.setMousePos(x, y);
-//            }
-//        });
-//        glfwSetScrollCallback(window, new GLFWScrollCallback() {
-//            @Override
-//            public void invoke(long window, double x, double y) {
-//                input.setScrollAmount(x, y);
-//            }
-//        });
+        glfwSetMouseButtonCallback(window, new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                input.setButtonPressed(button, action >= GLFW_PRESS);
+            }
+        });
+        glfwSetCursorPosCallback(window, new GLFWCursorPosCallback() {
+            @Override
+            public void invoke(long window, double x, double y) {
+                input.setMousePos(x, y);
+            }
+        });
+        glfwSetScrollCallback(window, new GLFWScrollCallback() {
+            @Override
+            public void invoke(long window, double x, double y) {
+                input.setScrollAmount(x, y);
+            }
+        });
     }
 
     public Input getInput() {
         return input;
+    }
+
+    public void setMousePos(double x, double y) {
+        glfwSetCursorPos(window, x, y);
     }
 
     public void setWindowDimensions(Application instance) {

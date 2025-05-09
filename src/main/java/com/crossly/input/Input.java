@@ -1,5 +1,6 @@
 package com.crossly.input;
 
+import com.crossly.window.Window;
 import org.joml.Vector2i;
 
 import java.util.HashSet;
@@ -101,6 +102,9 @@ public class Input {
     public static final int KEY_SCROLL_LOCK = GLFW_KEY_SCROLL_LOCK;
     public static final int KEY_PAUSE = GLFW_KEY_PAUSE;
 
+    private final Set<Integer> keysPressed = new HashSet<>();
+    private final Set<Integer> keysLast = new HashSet<>();
+
     private final Set<Integer> buttonsPressed = new HashSet<>();
     private final Set<Integer> buttonsLast = new HashSet<>();
 
@@ -108,19 +112,46 @@ public class Input {
 
     private final Vector2i scrollAmount = new Vector2i();
 
-    private final Set<Integer> keysPressed = new HashSet<>();
-    private final Set<Integer> keysLast = new HashSet<>();
+    private final Window managerWindow;
 
-    private long windowHandle;
+    public Input(Window window) {
+        managerWindow = window;
+    }
 
     public void setKeyPressed(int keyCode, boolean action) {
         if (action) keysPressed.add(keyCode);
         else keysPressed.remove(keyCode);
     }
 
+    public void setButtonPressed(int button, boolean action) {
+        if (action) buttonsPressed.add(button);
+        else buttonsPressed.remove(button);
+    }
+
+    public void setMousePos(double x, double y) {
+        mousePos.x = (int) x;
+        mousePos.y = (int) y;
+    }
+
+    public void forceMousePos(double x, double y) {
+        managerWindow.setMousePos(x, y);
+        setMousePos(x, y);
+    }
+
+    public void setScrollAmount(double x, double y) {
+        scrollAmount.x = (int) x;
+        scrollAmount.y = (int) y;
+    }
+
     public void update() {
+        // Setting last frames keyboard info
         keysLast.clear();
         keysLast.addAll(keysPressed);
+        // Setting last frames mouse button info
+        buttonsLast.clear();
+        buttonsLast.addAll(buttonsPressed);
+        // Resetting the mouse scroll values
+        scrollAmount.x = scrollAmount.y = 0;
     }
 
     public boolean isKeyJustPressed(int keyCode) {
@@ -129,5 +160,45 @@ public class Input {
 
     public boolean isKeyPressed(int keyCode) {
         return keysPressed.contains(keyCode);
+    }
+
+    public boolean isKeyJustReleased(int keyCode) {
+        return !keysPressed.contains(keyCode) && keysLast.contains(keyCode);
+    }
+
+    public boolean isButtonJustPressed(int button) {
+        return buttonsPressed.contains(button) && !buttonsLast.contains(button);
+    }
+
+    public boolean isButtonPressed(int button) {
+        return buttonsPressed.contains(button);
+    }
+
+    public boolean isButtonJustReleased(int button) {
+        return !buttonsPressed.contains(button) && buttonsLast.contains(button);
+    }
+
+    public Vector2i getMousePos() {
+        return mousePos;
+    }
+
+    public boolean isScrollUp() {
+        return scrollAmount.y > 0;
+    }
+
+    public boolean isScrollDown() {
+        return scrollAmount.y < 0;
+    }
+
+    public boolean isScrollRight() {
+        return scrollAmount.x < 0;
+    }
+
+    public boolean isScrollLeft() {
+        return scrollAmount.x > 0;
+    }
+
+    public Vector2i getScrollAmount() {
+        return scrollAmount.absolute(new Vector2i());
     }
 }
