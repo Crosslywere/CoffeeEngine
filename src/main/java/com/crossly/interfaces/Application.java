@@ -41,6 +41,10 @@ public abstract class Application {
         return fullscreen;
     }
 
+    public final boolean getFullscreen() {
+        return fullscreen;
+    }
+
     public final void setFullscreen(boolean fullscreen) {
         if (this.fullscreen != fullscreen) {
             this.fullscreen = fullscreen;
@@ -62,12 +66,7 @@ public abstract class Application {
     public void onResize() {
     }
 
-    public void onRender() {
-        glClear(GL_COLOR_BUFFER_BIT);
-    }
+    public abstract void onRender();
 
-    public void onUpdate(Input input) {
-        if (input.isKeyPressed(Input.KEY_ESCAPE)) quit();
-        if (input.isKeyJustPressed(Input.KEY_F)) setFullscreen(!fullscreen);
-    }
+    public abstract void onUpdate(Input input);
 }
