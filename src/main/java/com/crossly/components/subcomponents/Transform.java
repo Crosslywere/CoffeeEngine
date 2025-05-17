@@ -1,6 +1,5 @@
 package com.crossly.components.subcomponents;
 
-import org.joml.AxisAngle4f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -17,11 +16,10 @@ public class Transform {
     }
 
     public Matrix4f getTransformMatrix() {
-        var rot = new AxisAngle4f(1, rotation);
         var matrix = new Matrix4f()
                 .translate(position)
-                .scale(scale)
-                .rotate(new Quaternionf(rot));
+                .rotate(new Quaternionf().rotateXYZ(rotation.x(), rotation.y(), rotation.z()))
+                .scale(scale);
         if (parent != null) {
             return parent.getTransformMatrix().mul(matrix);
         }
