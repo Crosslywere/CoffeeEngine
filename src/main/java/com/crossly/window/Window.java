@@ -16,6 +16,7 @@ public class Window implements Component {
 
     private final long window;
     private boolean vsync = false;
+    private long monitor = 0;
 
     private final Input input;
 
@@ -27,7 +28,7 @@ public class Window implements Component {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-        window = glfwCreateWindow(800, 600, "Coffee Engine", 0L, 0L);
+        window = glfwCreateWindow(800, 600, "Coffee Engine", monitor, 0L);
         if (window == 0)
             throw new RuntimeException("glfwCreateWindow failed!");
         glfwMakeContextCurrent(window);
@@ -71,7 +72,7 @@ public class Window implements Component {
     }
 
     public void setWindowDimensions(Application instance) {
-        long monitor = glfwGetPrimaryMonitor();
+        if (monitor == 0) monitor = glfwGetPrimaryMonitor();
         var mode = glfwGetVideoMode(monitor);
         if (mode != null && (instance.getWindowWidth() > 0 || instance.getWindowHeight() > 0)) {
             if (instance.isFullscreen()) {
@@ -79,6 +80,7 @@ public class Window implements Component {
             } else {
                 glfwSetWindowMonitor(window, 0L, 0, 0, 800, 600, mode.refreshRate());
                 glfwSetWindowSize(window, instance.getWindowWidth(), instance.getWindowHeight());
+                glfwSetWindowPos(window, (mode.width()  - instance.getWindowWidth()) / 2, (mode.height() - instance.getWindowHeight()) / 2);
             }
             glViewport(0, 0, instance.getWindowWidth(), instance.getWindowHeight());
             instance.onResize();
