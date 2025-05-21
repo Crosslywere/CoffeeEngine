@@ -26,12 +26,31 @@ public class Transform {
         return matrix;
     }
 
+    public Matrix4f getLocalTransformMatrix() {
+        return new Matrix4f()
+                .translate(position)
+                .rotate(new Quaternionf().rotateXYZ(rotation.x(), rotation.y(), rotation.z()))
+                .scale(scale);
+    }
+
     public Vector3f getPosition() {
         return position;
     }
 
     public void setPosition(Vector3f position) {
         this.position = position;
+    }
+
+    public void setPositionX(float x) {
+        position.x = x;
+    }
+
+    public void setPositionY(float y) {
+        position.y = y;
+    }
+
+    public void setPositionZ(float z) {
+        position.z = z;
     }
 
     public Vector3f getRotation() {
@@ -42,8 +61,16 @@ public class Transform {
         this.rotation = rotation;
     }
 
+    public void setRotationX(float x) {
+        rotation.x = x;
+    }
+
     public void setRotationY(float y) {
         rotation.y = y;
+    }
+
+    public void setRotationZ(float z) {
+        rotation.z = z;
     }
 
     public Vector3f getScale() {
@@ -52,6 +79,10 @@ public class Transform {
 
     public void setScale(Vector3f scale) {
         this.scale = scale;
+    }
+
+    public void setScale(float s) {
+        scale = new Vector3f(s);
     }
 
     public void setParent(Transform parent) {
