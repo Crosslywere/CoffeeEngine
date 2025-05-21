@@ -5,6 +5,7 @@ import com.crossly.util.FileUtil;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL46;
 
 import java.util.*;
 
@@ -22,7 +23,7 @@ public class ShaderProgram implements Component {
         this.program = builder()
                 .attachVertexShader(vertexSource)
                 .attachFragmentShader(fragmentSource)
-                .create().program;
+                .build().program;
     }
 
     private ShaderProgram(int program) {
@@ -209,22 +210,13 @@ public class ShaderProgram implements Component {
             return attachTesselationControlShader(src);
         }
 
-        public ShaderProgram create() {
+        public ShaderProgram build() {
             for (int part : shaderParts) {
                 glAttachShader(program, part);
             }
             glLinkProgram(program);
             validateProgram(program);
-            return new ShaderProgram(program);
-        }
-
-        public ShaderProgram createClone() {
-            int program = glCreateProgram();
-            for (int part : shaderParts) {
-                glAttachShader(program, part);
-            }
-            glLinkProgram(program);
-            validateProgram(program);
+            shaderParts.forEach(GL46::glDeleteShader);
             return new ShaderProgram(program);
         }
 
