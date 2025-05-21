@@ -11,32 +11,6 @@ import static org.lwjgl.opengl.GL46.*;
 
 public class Mesh implements Component {
 
-    public static final Mesh UNIT_MESH_2D = new Mesh(
-            new float[] {
-                    -1, 1, 0,
-                    -1,-1, 0,
-                     1,-1, 0,
-                     1, 1, 0,
-            },
-            null,
-            new float[] {
-                    0, 1,
-                    0, 0,
-                    1, 0,
-                    1, 1,
-            },
-            new float[] {
-                    0, 0, 1,
-                    0, 0, 1,
-                    0, 0, 1,
-                    0, 0, 1,
-            },
-            new int[] {
-                    0, 1, 2,
-                    2, 3, 0,
-            }
-    );
-
     private final int vertexArrayObject;
     private final int count;
     private final ArrayList<Integer> buffers = new ArrayList<>();
