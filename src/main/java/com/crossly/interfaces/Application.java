@@ -3,9 +3,6 @@ package com.crossly.interfaces;
 import com.crossly.CoffeeEngine;
 import com.crossly.input.Input;
 
-import static org.lwjgl.opengl.GL11C.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11C.glClear;
-
 public abstract class Application {
     private int windowWidth;
     private int windowHeight;
