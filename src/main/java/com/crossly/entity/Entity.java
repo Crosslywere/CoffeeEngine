@@ -64,6 +64,16 @@ public class Entity {
         components.put(name, component);
     }
 
+    public <E extends Component> void replaceComponent(String name, E component) {
+        var instance = components.get(name);
+        if (instance != null)
+            components.replace(name, instance, component);
+    }
+
+    public <E extends Component> void removeComponent(String name) {
+        components.remove(name);
+    }
+
     public void addChild(Entity entity) {
         children.add(entity);
         entity.transform.setParent(this.transform);
@@ -85,6 +95,7 @@ public class Entity {
             shader.use();
             shader.setModelMatrix(transform.getTransformMatrix());
             components.values().forEach(Component::render);
+//            Texture.resetTextureBindings(); // private static int textureBindingIndex = 0 // reset by this function, incremented by calls to render.
         }
         children.forEach(Entity::render);
     }
