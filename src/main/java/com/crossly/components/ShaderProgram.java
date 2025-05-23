@@ -146,6 +146,8 @@ public class ShaderProgram implements Component {
 
         private final List<Integer> shaderParts = new ArrayList<>();
 
+        private String projection = null, view = null, model = null;
+
         public Builder() {
             program = glCreateProgram();
         }
@@ -210,6 +212,21 @@ public class ShaderProgram implements Component {
             return attachTesselationControlShader(src);
         }
 
+        public Builder setProjection(String projection) {
+            this.projection = projection;
+            return this;
+        }
+
+        public Builder setView(String view) {
+            this.view = view;
+            return this;
+        }
+
+        public Builder setModel(String model) {
+            this.model = model;
+            return this;
+        }
+
         public ShaderProgram build() {
             for (int part : shaderParts) {
                 glAttachShader(program, part);
@@ -217,7 +234,12 @@ public class ShaderProgram implements Component {
             glLinkProgram(program);
             validateProgram(program);
             shaderParts.forEach(GL46::glDeleteShader);
-            return new ShaderProgram(program);
+            var shader = new ShaderProgram(program);
+            shader.use();
+            if (projection != null) shader.setProjectionUniform(projection);
+            if (view != null) shader.setViewUniform(view);
+            if (model != null) shader.setModelUniform(model);
+            return shader;
         }
 
         private static int compileShaderFromMemory(String src, int type) {
