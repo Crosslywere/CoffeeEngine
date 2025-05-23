@@ -3,10 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <developers>
+        <developer>
+            <id>Crosslywere</id>
+            <name>Jude Ogboru</name>
+            <email>ogboruj@outlook.com</email>
+        </developer>
+    </developers>
 
     <groupId>org.crossly</groupId>
     <artifactId>CoffeeEngine</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>unversioned</version>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
