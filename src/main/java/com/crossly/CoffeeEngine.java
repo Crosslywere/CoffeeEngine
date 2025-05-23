@@ -2,6 +2,7 @@ package com.crossly;
 
 import com.crossly.interfaces.Application;
 import com.crossly.interfaces.Camera;
+import com.crossly.timer.Timer;
 import com.crossly.window.Window;
 
 import java.util.Optional;
@@ -30,9 +31,11 @@ public class CoffeeEngine {
             if (instance instanceof Application application) {
                 setWindowDimensions(application);
                 window.setTitle(application.getWindowTitle());
+                Timer.init();
                 while (window.isOpen() && application.isRunning()) {
                     application.onUpdate(window.getInput());
                     application.onRender();
+                    Timer.update();
                 }
                 application.onExit();
                 window.cleanup();
