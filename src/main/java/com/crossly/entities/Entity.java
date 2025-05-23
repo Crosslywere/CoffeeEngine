@@ -91,19 +91,19 @@ public class Entity {
     }
 
     public void render() {
-        if (shaderKey != null) {
-            ShaderProgram shader = getComponent(shaderKey, ShaderProgram.class);
-            shader.use();
-            CoffeeEngine.getCurrentActiveCamera().ifPresent(
-                    camera -> {
-                        shader.setProjectionMatrix(camera.getProjection());
-                        shader.setViewMatrix(camera.getView());
-                    }
-            );
-            shader.setModelMatrix(transform.getTransformMatrix());
-            components.values().forEach(Component::render);
-//            Texture.resetTextureBindings(); // private static int textureBindingIndex = 0 // reset by this function, incremented by calls to render.
-        }
+        getShaderComponent().ifPresent(
+                shader -> {
+                    shader.use();
+                    CoffeeEngine.getCurrentActiveCamera().ifPresent(
+                            camera -> {
+                                shader.setProjectionMatrix(camera.getProjection());
+                                shader.setViewMatrix(camera.getView());
+                            }
+                    );
+                    shader.setModelMatrix(transform.getTransformMatrix());
+                    components.values().forEach(Component::render);
+                }
+        );
         children.forEach(Entity::render);
     }
 
