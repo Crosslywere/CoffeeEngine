@@ -15,7 +15,7 @@ public class Mesh implements Component {
     private final int count;
     private final ArrayList<Integer> buffers = new ArrayList<>();
 
-    public Mesh(float[] vertexPositions, float[] vertexColors, float[] vertexTexCoords, float[] vertexNormals, int[] indices) {
+    public Mesh(float[] vertexPositions, float[] vertexNormals, float[] vertexTexCoords, float[] vertexColors, int[] indices) {
         assert vertexPositions != null && indices != null;
         count = indices.length;
         vertexArrayObject = glGenVertexArrays();
@@ -26,13 +26,13 @@ public class Mesh implements Component {
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(0);
         buffers.add(posBuffer);
-        if (vertexColors != null) {
-            int colorBuffer = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-            glBufferData(GL_ARRAY_BUFFER, vertexColors, GL_STATIC_DRAW);
+        if (vertexNormals != null) {
+            int normalBuffer = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+            glBufferData(GL_ARRAY_BUFFER, vertexNormals, GL_STATIC_DRAW);
             glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
             glEnableVertexAttribArray(1);
-            buffers.add(colorBuffer);
+            buffers.add(normalBuffer);
         }
         if (vertexTexCoords != null) {
             int texCoordBuffer = glGenBuffers();
@@ -42,13 +42,13 @@ public class Mesh implements Component {
             glEnableVertexAttribArray(2);
             buffers.add(texCoordBuffer);
         }
-        if (vertexNormals != null) {
-            int normalBuffer = glGenBuffers();
-            glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-            glBufferData(GL_ARRAY_BUFFER, vertexNormals, GL_STATIC_DRAW);
+        if (vertexColors != null) {
+            int colorBuffer = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+            glBufferData(GL_ARRAY_BUFFER, vertexColors, GL_STATIC_DRAW);
             glVertexAttribPointer(3, 3, GL_FLOAT, false, 0, 0);
             glEnableVertexAttribArray(3);
-            buffers.add(normalBuffer);
+            buffers.add(colorBuffer);
         }
         int elementBuffer = glGenBuffers();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
@@ -140,7 +140,7 @@ public class Mesh implements Component {
             for (int i = 0; i < indicesData.size(); i++) {
                 indices[i] = indicesData.get(i);
             }
-            return new Mesh(posData, null, cordData, normData, indices);
+            return new Mesh(posData, normData, cordData, null, indices);
         }
 
         @Override
