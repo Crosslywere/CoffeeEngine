@@ -1,8 +1,9 @@
-package com.crossly.entity;
+package com.crossly.entities;
 
+import com.crossly.interfaces.Camera;
 import org.joml.Matrix4f;
 
-public class Camera3D extends Entity {
+public class Camera3D extends Entity implements Camera {
 
     private Matrix4f projection;
 
@@ -26,19 +27,27 @@ public class Camera3D extends Entity {
         projection = new Matrix4f().perspective((float) Math.toRadians(fieldOfView), aspectRatio, 0.1f, 1000);
     }
 
+    @Override
+    public Matrix4f getProjection() {
+        return projection;
+    }
+
+    @Override
+    public Matrix4f getView() {
+        return getTransform().getLocalTransformMatrix();
+    }
+
     public void setAspectRatio(float aspectRatio) {
         this.aspectRatio = aspectRatio;
         setProjection();
     }
 
+    public float getFieldOfView() {
+        return fieldOfView;
+    }
+
     public void setFieldOfView(float fieldOfView) {
         this.fieldOfView = fieldOfView;
         setProjection();
-    }
-
-    public Matrix4f getProjectionView() {
-        var projView = new Matrix4f();
-        projection.mul(getTransform().getLocalTransformMatrix(), projView);
-        return projView;
     }
 }
