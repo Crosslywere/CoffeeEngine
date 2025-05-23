@@ -1,5 +1,7 @@
-> Create drawable objects ie Meshes (Static, Dynamic, and Rigged)
+- Implement rigged and dynamic meshes
 
-> Check out Artemis (https://thelinuxlich.github.io/artemis_CSharp/)
+- Check out Artemis (https://thelinuxlich.github.io/artemis_CSharp/)
 
-> Implement framebuffer as a component of camera
+- Implement framebuffer as a component of camera
+
+- Implement a framebuffer builder
