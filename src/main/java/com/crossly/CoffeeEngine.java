@@ -1,14 +1,26 @@
 package com.crossly;
 
 import com.crossly.interfaces.Application;
+import com.crossly.interfaces.Camera;
 import com.crossly.window.Window;
+
+import java.util.Optional;
 
 public class CoffeeEngine {
 
     private static Window window = null;
+    private static Camera currentActiveCamera = null;
 
     public static void setWindowDimensions(Application application) {
         window.setWindowDimensions(application);
+    }
+
+    public static Optional<Camera> getCurrentActiveCamera() {
+        return Optional.ofNullable(currentActiveCamera);
+    }
+
+    public static void setCurrentActiveCamera(Camera camera) {
+        currentActiveCamera = camera;
     }
 
     public static void run(Class<?> applicationClass) {

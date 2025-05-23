@@ -1,5 +1,6 @@
-package com.crossly.entity;
+package com.crossly.entities;
 
+import com.crossly.CoffeeEngine;
 import com.crossly.components.ShaderProgram;
 import com.crossly.components.subcomponents.Transform;
 import com.crossly.interfaces.Component;
@@ -93,6 +94,12 @@ public class Entity {
         if (shaderKey != null) {
             ShaderProgram shader = getComponent(shaderKey, ShaderProgram.class);
             shader.use();
+            CoffeeEngine.getCurrentActiveCamera().ifPresent(
+                    camera -> {
+                        shader.setProjectionMatrix(camera.getProjection());
+                        shader.setViewMatrix(camera.getView());
+                    }
+            );
             shader.setModelMatrix(transform.getTransformMatrix());
             components.values().forEach(Component::render);
 //            Texture.resetTextureBindings(); // private static int textureBindingIndex = 0 // reset by this function, incremented by calls to render.
