@@ -6,10 +6,7 @@ import com.crossly.components.subcomponents.Transform;
 import com.crossly.interfaces.Component;
 import org.joml.Matrix4f;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Entity {
 
@@ -27,9 +24,10 @@ public class Entity {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public <E extends Component> E getComponent(String name, Class<E> type) {
         var comp = components.get(name);
-        if (comp.getClass() == type) {
+        if (comp != null && comp.getClass() == type) {
             return (E) comp;
         }
         return null;
@@ -110,5 +108,6 @@ public class Entity {
     public void cleanup() {
         components.values().forEach(Component::cleanup);
         components.clear();
+        children.forEach(Entity::cleanup);
     }
 }
