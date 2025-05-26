@@ -182,7 +182,7 @@ public class Input {
     }
 
     public Vector2i getMousePos() {
-        return mousePos;
+        return new Vector2i(mousePos);
     }
 
     public boolean isScrollUp() {
@@ -203,5 +203,21 @@ public class Input {
 
     public Vector2i getScrollAmount() {
         return scrollAmount.absolute(new Vector2i());
+    }
+
+    public void captureMouse() {
+        managerWindow.setMouseCaptured();
+    }
+
+    public void disableMouse() {
+        managerWindow.setMouseDisabled();
+    }
+
+    public void hiddenMouse() {
+        managerWindow.setMouseHidden();
+    }
+
+    public void normalMouse() {
+        managerWindow.setMouseNormal();
     }
 }
