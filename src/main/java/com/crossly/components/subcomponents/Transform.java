@@ -1,10 +1,14 @@
 package com.crossly.components.subcomponents;
 
+import com.crossly.interfaces.SubComponent;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class Transform {
+/**
+ * @author Jude Ogboru
+ */
+public class Transform implements SubComponent {
 
     private Vector3f position = new Vector3f();
     private Vector3f rotation = new Vector3f();
@@ -13,6 +17,22 @@ public class Transform {
     private Transform parent = null;
 
     public Transform() {
+    }
+
+    private static Vector3f rotate(Vector3f vector, Vector3f rotation) {
+        return vector.rotate(new Quaternionf().rotateXYZ(rotation.x(), rotation.y(), rotation.z()));
+    }
+
+    public Vector3f getForward() {
+        return rotate(new Vector3f(0, 0, 1), rotation);
+    }
+
+    public Vector3f getUp() {
+        return rotate(new Vector3f(0, 1, 0), rotation);
+    }
+
+    public Vector3f getRight() {
+        return rotate(new Vector3f(1, 0, 0), rotation);
     }
 
     public Matrix4f getTransformMatrix() {
@@ -41,6 +61,10 @@ public class Transform {
         this.position = position;
     }
 
+    public void incrementPosition(Vector3f offset) {
+        position.add(offset);
+    }
+
     public void setPositionX(float x) {
         position.x = x;
     }
@@ -59,6 +83,10 @@ public class Transform {
 
     public void setRotation(Vector3f rotation) {
         this.rotation = rotation;
+    }
+
+    public void incrementRotation(Vector3f rotation) {
+        this.rotation.add(rotation);
     }
 
     public void setRotationX(float x) {
@@ -81,11 +109,33 @@ public class Transform {
         this.scale = scale;
     }
 
+    public void incrementScale(Vector3f scale) {
+        this.scale.add(scale);
+    }
+
     public void setScale(float s) {
         scale = new Vector3f(s);
     }
 
+    public void incrementScale(float s) {
+        scale.add(s, s, s);
+    }
+
     public void setParent(Transform parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public void reset() {
+        position = new Vector3f();
+        rotation = new Vector3f();
+        scale = new Vector3f(1);
+    }
+
+    @Override
+    public String toString() {
+        return "TRANSLATION {" + position.x() + ", " + position.y() + ", " + position.z() + "}\n" +
+                "ROTATION {" + (float) Math.toDegrees(rotation.x()) + ", " + (float) Math.toDegrees(rotation.y()) + ", " + (float) Math.toDegrees(rotation.z()) + "}\n" +
+                "SCALE {" + scale.x() + ", " + scale.y() + ", " + scale.z() + "}";
     }
 }
