@@ -11,6 +11,7 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * @author Jude Ogboru
  */
+@SuppressWarnings("unused")
 public class Input {
 
     public static final int MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT;
