@@ -7,6 +7,9 @@ import com.crossly.window.Window;
 
 import java.util.Optional;
 
+/**
+ * @author Jude Ogboru
+ */
 public class CoffeeEngine {
 
     private static Window window = null;

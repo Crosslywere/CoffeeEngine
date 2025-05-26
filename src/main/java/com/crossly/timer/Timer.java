@@ -2,6 +2,9 @@ package com.crossly.timer;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
+/**
+ * @author Jude Ogboru
+ */
 public class Timer {
 
     private static float totalTime = 0f;

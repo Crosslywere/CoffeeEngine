@@ -3,6 +3,9 @@ package com.crossly.interfaces;
 import com.crossly.CoffeeEngine;
 import org.joml.Matrix4f;
 
+/**
+ * @author Jude Ogboru
+ */
 public interface Camera {
 
     Matrix4f getProjection();

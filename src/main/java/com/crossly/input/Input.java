@@ -8,6 +8,9 @@ import java.util.Set;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+/**
+ * @author Jude Ogboru
+ */
 public class Input {
 
     public static final int MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT;

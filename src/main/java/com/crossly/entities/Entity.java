@@ -8,6 +8,9 @@ import org.joml.Matrix4f;
 
 import java.util.*;
 
+/**
+ * @author Jude Ogboru
+ */
 public class Entity {
 
     private final Map<String, Component> components = new HashMap<>();

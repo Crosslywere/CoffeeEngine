@@ -11,6 +11,9 @@ import java.util.*;
 
 import static org.lwjgl.opengl.GL46.*;
 
+/**
+ * @author Jude Ogboru
+ */
 public class ShaderProgram implements Component {
 
     private final int program;

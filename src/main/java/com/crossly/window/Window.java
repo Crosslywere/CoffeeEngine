@@ -12,6 +12,9 @@ import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL46.*;
 
+/**
+ * @author Jude Ogboru
+ */
 public class Window implements Component {
 
     private final long window;

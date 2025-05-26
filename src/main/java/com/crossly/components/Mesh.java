@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL46.*;
 
+/**
+ * @author Jude Ogboru
+ */
 public class Mesh implements Component {
 
     private final int vertexArrayObject;

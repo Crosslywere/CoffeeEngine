@@ -1,5 +1,8 @@
 package com.crossly.interfaces;
 
+/**
+ * @author Jude Ogboru
+ */
 public interface Component {
 
     default void use() {}

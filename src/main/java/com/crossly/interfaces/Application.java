@@ -3,6 +3,9 @@ package com.crossly.interfaces;
 import com.crossly.CoffeeEngine;
 import com.crossly.input.Input;
 
+/**
+ * @author Jude Ogboru
+ */
 public abstract class Application {
     private int windowWidth;
     private int windowHeight;
