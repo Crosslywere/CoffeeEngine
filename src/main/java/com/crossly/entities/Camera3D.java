@@ -1,30 +1,38 @@
 package com.crossly.entities;
 
+import com.crossly.CoffeeEngine;
+import com.crossly.components.Framebuffer;
+import com.crossly.components.ShaderProgram;
 import com.crossly.interfaces.Camera;
+import com.crossly.util.Pair;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
+import java.util.Optional;
+
+/**
+ * @author Jude Ogboru
+ */
 public class Camera3D extends Entity implements Camera {
 
     private Matrix4f projection;
 
     private float aspectRatio;
-    private float fieldOfView;
+    private float fieldOfView = (float) Math.toRadians(45);
+    private Framebuffer framebuffer;
+    private Pair<ShaderProgram, String> shaderTexturePair = null;
 
-    public Camera3D() {
-        this(4f / 3f, 45);
+    public Camera3D(int width, int height) {
+        aspectRatio = (float) width / height;
+        getTransform().setPositionY(2.5f);
+        getTransform().setPositionZ(-2.5f);
+        getTransform().setRotationX((float) Math.toRadians(35));
+        framebuffer = new Framebuffer(width, height);
+        setupProjection();
     }
 
-    public Camera3D(float aspectRatio, float fieldOfView) {
-        this.aspectRatio = aspectRatio;
-        this.fieldOfView = fieldOfView;
-        getTransform().setPositionY(-1);
-        getTransform().setPositionZ(-5);
-        getTransform().setRotationX((float) Math.toRadians(30));
-        setProjection();
-    }
-
-    private void setProjection() {
-        projection = new Matrix4f().perspective((float) Math.toRadians(fieldOfView), aspectRatio, 0.1f, 1000);
+    private void setupProjection() {
+        projection = new Matrix4f().perspective(fieldOfView, aspectRatio, 0.1f, 1000);
     }
 
     @Override
@@ -34,12 +42,14 @@ public class Camera3D extends Entity implements Camera {
 
     @Override
     public Matrix4f getView() {
-        return getTransform().getLocalTransformMatrix();
+        return new Matrix4f().lookAt(getTransform().getPosition(),
+                getTransform().getPosition().add(getTransform().getForward(), new Vector3f()),
+                new Vector3f(0, 1, 0));
     }
 
     public void setAspectRatio(float aspectRatio) {
         this.aspectRatio = aspectRatio;
-        setProjection();
+        setupProjection();
     }
 
     public float getFieldOfView() {
@@ -48,6 +58,54 @@ public class Camera3D extends Entity implements Camera {
 
     public void setFieldOfView(float fieldOfView) {
         this.fieldOfView = fieldOfView;
-        setProjection();
+        setupProjection();
+    }
+
+    @Override
+    public void makeActive() {
+        if (framebuffer != null) {
+            framebuffer.use();
+            Framebuffer.clear();
+        }
+        CoffeeEngine.setCurrentActiveCamera(this);
+    }
+
+    @Override
+    public void cleanup() {
+        framebuffer.cleanup();
+    }
+
+    public void drawFramebuffer() {
+        framebuffer.render();
+    }
+
+    @Override
+    public void render() {
+        if (shaderTexturePair == null) {
+            framebuffer.render();
+        } else {
+            framebuffer.render(shaderTexturePair.getFirst(), shaderTexturePair.getSecond());
+        }
+    }
+
+    public void remake(int width, int height) {
+        framebuffer.cleanup();
+        framebuffer = new Framebuffer(width, height);
+        aspectRatio = (float) width / height;
+        setupProjection();
+    }
+
+    public Optional<ShaderProgram> getScreenShader() {
+        if (shaderTexturePair != null)
+            return Optional.of(shaderTexturePair.getFirst());
+        return Optional.empty();
+    }
+
+    public void setScreenShader(ShaderProgram shader, String textureUniform) {
+        if (shader == null || textureUniform == null || textureUniform.isBlank()) {
+            shaderTexturePair = null;
+        } else {
+            shaderTexturePair = new Pair<>(shader, textureUniform);
+        }
     }
 }

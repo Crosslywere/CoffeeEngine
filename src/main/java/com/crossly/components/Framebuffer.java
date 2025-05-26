@@ -1,20 +1,24 @@
 package com.crossly.components;
 
 import com.crossly.interfaces.Component;
+import com.crossly.interfaces.SubComponent;
 
 import static org.lwjgl.opengl.GL46.*;
 
+/**
+ * @author Jude Ogboru
+ */
 public class Framebuffer implements Component {
 
     public static void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    private static final Mesh SCREEN = new Mesh(
+    private static final Mesh SCREEN_MESH = new Mesh(
             new float[] {
-                    -1f, -1f, 0,
-                    1f, -1f, 0,
-                    1f,  1f, 0,
+                    -1f,-1f, 0,
+                     1f,-1f, 0,
+                     1f, 1f, 0,
                     -1f, 1f, 0,
             },
             null,
@@ -45,7 +49,9 @@ public class Framebuffer implements Component {
                     }""")
             .build();
 
-    private final int framebufferId, textureId, renderBufferId, width, height;
+    private final int framebufferId, width, height;
+    private final Texture texture;
+    private final RenderBuffer renderbuffer;
 
     public Framebuffer(int width, int height) {
         this.width = width;
@@ -53,17 +59,11 @@ public class Framebuffer implements Component {
         framebufferId = glGenFramebuffers();
         bind();
         // Color Attachment 0
-        textureId = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
+        texture = new Texture(width, height, GL_RGBA, GL_COLOR_ATTACHMENT0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, texture.usage(), GL_TEXTURE_2D, texture.textureId(), 0);
         // Depth stencil Renderbuffer
-        renderBufferId = glGenRenderbuffers();
-        glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBufferId);
+        renderbuffer = new RenderBuffer(width, height, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, renderbuffer.usage(), GL_RENDERBUFFER, renderbuffer.renderBufferId());
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             throw new RuntimeException("Framebuffer incomplete!");
         }
@@ -72,8 +72,8 @@ public class Framebuffer implements Component {
 
     @Override
     public void cleanup() {
-        glDeleteTextures(textureId);
-        glDeleteRenderbuffers(renderBufferId);
+        texture.cleanup();
+        renderbuffer.cleanup();
         glDeleteFramebuffers(framebufferId);
     }
 
@@ -96,9 +96,80 @@ public class Framebuffer implements Component {
         unbind();
         clear();
         SCREEN_SHADER.use();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureId);
-        SCREEN_SHADER.setInt("u_Texture", 0);
-        SCREEN.render();
+        texture.bind();
+        SCREEN_SHADER.setInt("u_Texture", texture.index);
+        SCREEN_MESH.render();
+    }
+
+    public void render(ShaderProgram program, String textureUniform) {
+        unbind();
+        clear();
+        program.use();
+        texture.bind();
+        program.setInt(textureUniform, texture.index);
+        SCREEN_MESH.render();
+    }
+
+    private static class Texture implements SubComponent {
+        int textureId;
+        int index;
+        static int indexer = 0;
+        int usage;
+        Texture(int width, int height, int format, int usage) {
+            this.usage = usage;
+            index = indexer++;
+            textureId = glGenTextures();
+            glBindTexture(GL_TEXTURE_2D, textureId);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        Texture(int width, int height, int internalFormat, int format, int usage) {
+            this.usage = usage;
+            index = indexer++;
+            textureId = glGenTextures();
+            glBindTexture(GL_TEXTURE_2D, textureId);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+        int textureId() {
+            return textureId;
+        }
+        int usage() {
+            return usage;
+        }
+        void bind() {
+            glActiveTexture(GL_TEXTURE0 + index);
+            glBindTexture(GL_TEXTURE_2D, textureId);
+        }
+        @Override
+        public void cleanup() {
+            glDeleteTextures(textureId);
+        }
+    }
+
+    private static class RenderBuffer implements SubComponent {
+        int renderBufferId;
+        int usage;
+        RenderBuffer(int width, int height, int format, int usage) {
+            this.usage = usage;
+            renderBufferId = glGenRenderbuffers();
+            glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
+            glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        }
+        int renderBufferId() {
+            return renderBufferId;
+        }
+        int usage() {
+            return usage;
+        }
+        @Override
+        public void cleanup() {
+            glDeleteRenderbuffers(renderBufferId);
+        }
     }
 }
