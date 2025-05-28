@@ -23,9 +23,6 @@ public class Camera3D extends Entity implements Camera {
 
     public Camera3D(int width, int height) {
         aspectRatio = (float) width / height;
-        getTransform().setPositionY(2.5f);
-        getTransform().setPositionZ(-2.5f);
-        getTransform().setPitch((float) Math.toRadians(35));
         framebuffer = new Framebuffer(width, height);
         setupProjection();
     }
