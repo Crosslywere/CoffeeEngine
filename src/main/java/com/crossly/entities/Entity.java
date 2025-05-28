@@ -77,6 +77,7 @@ public class Entity {
     }
 
     public void addChild(Entity entity) {
+        if (entity == this) return;
         children.add(entity);
         entity.transform.setParent(this.transform);
     }
