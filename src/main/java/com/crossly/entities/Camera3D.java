@@ -6,7 +6,6 @@ import com.crossly.components.ShaderProgram;
 import com.crossly.interfaces.Camera;
 import com.crossly.util.Pair;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -26,7 +25,7 @@ public class Camera3D extends Entity implements Camera {
         aspectRatio = (float) width / height;
         getTransform().setPositionY(2.5f);
         getTransform().setPositionZ(-2.5f);
-        getTransform().setRotationX((float) Math.toRadians(35));
+        getTransform().setPitch((float) Math.toRadians(35));
         framebuffer = new Framebuffer(width, height);
         setupProjection();
     }
@@ -43,8 +42,8 @@ public class Camera3D extends Entity implements Camera {
     @Override
     public Matrix4f getView() {
         return new Matrix4f().lookAt(getTransform().getPosition(),
-                getTransform().getPosition().add(getTransform().getForward(), new Vector3f()),
-                new Vector3f(0, 1, 0));
+                getTransform().getPosition().add(getTransform().getFront()),
+                getTransform().getUp());
     }
 
     public void setAspectRatio(float aspectRatio) {
