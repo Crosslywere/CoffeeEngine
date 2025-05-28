@@ -115,4 +115,20 @@ public class Window implements Component {
         glfwDestroyWindow(window);
         glfwTerminate();
     }
+
+    public void setMouseCaptured() {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_CAPTURED);
+    }
+
+    public void setMouseHidden() {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    }
+
+    public void setMouseDisabled() {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    public void setMouseNormal() {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 }
