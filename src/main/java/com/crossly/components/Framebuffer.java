@@ -1,5 +1,6 @@
 package com.crossly.components;
 
+import com.crossly.components.subcomponents.Mesh;
 import com.crossly.interfaces.Component;
 import com.crossly.interfaces.SubComponent;
 import org.joml.Vector3f;
@@ -61,6 +62,7 @@ public class Framebuffer implements Component {
     protected final int framebufferId, width, height;
     protected final Texture texture;
     protected final RenderBuffer renderbuffer;
+    protected int referenceCount = 0;
 
     public Framebuffer(int width, int height) {
         this.width = width;
@@ -81,9 +83,12 @@ public class Framebuffer implements Component {
 
     @Override
     public void cleanup() {
-        texture.cleanup();
-        renderbuffer.cleanup();
-        glDeleteFramebuffers(framebufferId);
+        if (referenceCount == 0) {
+            texture.cleanup();
+            renderbuffer.cleanup();
+            glDeleteFramebuffers(framebufferId);
+        } else
+            decrementReference();
     }
 
     protected void bind() {
@@ -108,6 +113,18 @@ public class Framebuffer implements Component {
         texture.bind();
         SCREEN_SHADER.setInt("u_Texture", texture.index);
         SCREEN_MESH.render();
+    }
+
+    @Override
+    public void incrementReference() {
+        referenceCount++;
+    }
+
+    @Override
+    public void decrementReference() {
+        referenceCount--;
+        if (referenceCount <= 0)
+            cleanup();
     }
 
     public void render(ShaderProgram program, String textureUniform) {

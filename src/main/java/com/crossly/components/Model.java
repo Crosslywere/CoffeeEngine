@@ -104,7 +104,7 @@ public class Model implements Component {
 
     @Override
     public void cleanup() {
-        if (referenceCount <= 0)
+        if (referenceCount == 0)
             meshes.forEach(Mesh::cleanup);
         else
             decrementReference();
