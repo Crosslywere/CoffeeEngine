@@ -13,7 +13,7 @@ public class Transform implements SubComponent {
     protected Vector3f position = new Vector3f();
     protected Vector3f rotation = new Vector3f();
     protected Vector3f scale = new Vector3f(1);
-    protected final Orientation orientation;
+    protected Orientation orientation;
 
     protected Transform parent = null;
 
