@@ -63,7 +63,7 @@ public class Entity {
         if (component.getClass() == ShaderProgram.class) {
             shaderKey = name;
         }
-        components.put(name, component);
+        components.put(name, component.getReference());
     }
 
     public <E extends Component> void replaceComponent(String name, E component) {

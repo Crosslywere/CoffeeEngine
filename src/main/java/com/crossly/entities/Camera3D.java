@@ -101,7 +101,7 @@ public class Camera3D extends Entity implements Camera {
         if (shader == null || textureUniform == null || textureUniform.isBlank()) {
             shaderTexturePair = null;
         } else {
-            shaderTexturePair = new Pair<>(shader, textureUniform);
+            shaderTexturePair = new Pair<>((ShaderProgram)shader.getReference(), textureUniform);
         }
     }
 }
