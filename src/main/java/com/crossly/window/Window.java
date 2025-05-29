@@ -2,7 +2,6 @@ package com.crossly.window;
 
 import com.crossly.input.Input;
 import com.crossly.interfaces.Application;
-import com.crossly.interfaces.Component;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
@@ -15,7 +14,7 @@ import static org.lwjgl.opengl.GL46.*;
 /**
  * @author Jude Ogboru
  */
-public class Window implements Component {
+public class Window {
 
     private final long window;
     private boolean vsync = false;
@@ -110,7 +109,6 @@ public class Window implements Component {
         return !glfwWindowShouldClose(window);
     }
 
-    @Override
     public void cleanup() {
         glfwDestroyWindow(window);
         glfwTerminate();
