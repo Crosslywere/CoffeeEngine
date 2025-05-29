@@ -19,4 +19,12 @@ public interface SubComponent extends Component {
     @Override
     default void cleanup() {
     }
+
+    @Override
+    default void incrementReference() {
+    }
+
+    @Override
+    default void decrementReference() {
+    }
 }
