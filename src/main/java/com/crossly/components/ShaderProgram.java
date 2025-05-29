@@ -21,6 +21,7 @@ public class ShaderProgram implements Component {
     protected int projectionUniformLocation = -1;
     protected int viewUniformLocation = -1;
     protected int modelUniformLocation = -1;
+    protected int referenceCount = 0;
 
     public ShaderProgram(String vertexSource, String fragmentSource) {
         this.program = builder()
@@ -136,7 +137,22 @@ public class ShaderProgram implements Component {
 
     @Override
     public void cleanup() {
-        glDeleteProgram(program);
+        if (referenceCount == 0)
+            glDeleteProgram(program);
+        else
+            decrementReference();
+    }
+
+    @Override
+    public void incrementReference() {
+        referenceCount++;
+    }
+
+    @Override
+    public void decrementReference() {
+        referenceCount--;
+        if (referenceCount == 0)
+            cleanup();
     }
 
     public static Builder builder() {
