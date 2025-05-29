@@ -2,6 +2,7 @@ package com.crossly.components;
 
 import com.crossly.interfaces.Component;
 import com.crossly.interfaces.SubComponent;
+import org.joml.Vector3f;
 
 import static org.lwjgl.opengl.GL46.*;
 
@@ -14,7 +15,15 @@ public class Framebuffer implements Component {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    private static final Mesh SCREEN_MESH = new Mesh(
+    public static void setClearColor(float r, float g, float b) {
+        glClearColor(r, g, b, 1);
+    }
+
+    public static void setClearColor(Vector3f color) {
+        setClearColor(color.x(), color.y(), color.z());
+    }
+
+    protected static final Mesh SCREEN_MESH = new Mesh(
             new float[] {
                     -1f,-1f, 0,
                      1f,-1f, 0,
@@ -30,7 +39,7 @@ public class Framebuffer implements Component {
             }
     );
 
-    private static final ShaderProgram SCREEN_SHADER = ShaderProgram.builder()
+    protected static final ShaderProgram SCREEN_SHADER = ShaderProgram.builder()
             .attachVertexShader("""
                     #version 330 core
                     layout (location = 0) in vec3 a_Pos;
@@ -49,9 +58,9 @@ public class Framebuffer implements Component {
                     }""")
             .build();
 
-    private final int framebufferId, width, height;
-    private final Texture texture;
-    private final RenderBuffer renderbuffer;
+    protected final int framebufferId, width, height;
+    protected final Texture texture;
+    protected final RenderBuffer renderbuffer;
 
     public Framebuffer(int width, int height) {
         this.width = width;
@@ -77,11 +86,11 @@ public class Framebuffer implements Component {
         glDeleteFramebuffers(framebufferId);
     }
 
-    private void bind() {
+    protected void bind() {
         glBindFramebuffer(GL_FRAMEBUFFER, framebufferId);
     }
 
-    private static void unbind() {
+    public static void unbind() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
@@ -110,7 +119,7 @@ public class Framebuffer implements Component {
         SCREEN_MESH.render();
     }
 
-    private static class Texture implements SubComponent {
+    public static class Texture implements SubComponent {
         int textureId;
         int index;
         static int indexer = 0;
@@ -151,7 +160,7 @@ public class Framebuffer implements Component {
         }
     }
 
-    private static class RenderBuffer implements SubComponent {
+    public static class RenderBuffer implements SubComponent {
         int renderBufferId;
         int usage;
         RenderBuffer(int width, int height, int format, int usage) {

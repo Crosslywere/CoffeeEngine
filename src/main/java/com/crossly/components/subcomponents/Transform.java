@@ -10,12 +10,12 @@ import org.joml.Vector3f;
  */
 public class Transform implements SubComponent {
 
-    private Vector3f position = new Vector3f();
-    private Vector3f rotation = new Vector3f();
-    private Vector3f scale = new Vector3f(1);
-    private final Orientation orientation;
+    protected Vector3f position = new Vector3f();
+    protected Vector3f rotation = new Vector3f();
+    protected Vector3f scale = new Vector3f(1);
+    protected final Orientation orientation;
 
-    private Transform parent = null;
+    protected Transform parent = null;
 
     public Transform() {
         orientation = new Orientation(rotation);
@@ -32,10 +32,6 @@ public class Transform implements SubComponent {
         return new Vector3f(Orientation.WORLD_UP);
     }
 
-    private static Vector3f rotate(Vector3f vector, Vector3f rotation) {
-        return vector.rotate(new Quaternionf().rotateXYZ(rotation.x(), rotation.y(), rotation.z()));
-    }
-
     public Vector3f getFront() {
         return orientation.getFront();
     }
@@ -49,14 +45,10 @@ public class Transform implements SubComponent {
     }
 
     public Matrix4f getTransformMatrix() {
-        var matrix = new Matrix4f()
-                .translate(position)
-                .rotate(new Quaternionf().rotateXYZ(rotation.x(), rotation.y(), rotation.z()))
-                .scale(scale);
         if (parent != null) {
-            return parent.getTransformMatrix().mul(matrix);
+            return parent.getTransformMatrix().mul(getLocalTransformMatrix());
         }
-        return matrix;
+        return getLocalTransformMatrix();
     }
 
     public Matrix4f getLocalTransformMatrix() {
@@ -163,31 +155,31 @@ public class Transform implements SubComponent {
     }
 
     public static class Orientation {
-        private final Vector3f front = new Vector3f();
-        private final Vector3f right = new Vector3f();
-        private final Vector3f up = new Vector3f();
+        protected final Vector3f front = new Vector3f();
+        protected final Vector3f right = new Vector3f();
+        protected final Vector3f up = new Vector3f();
 
-        private static final Vector3f WORLD_UP = new Vector3f(0, 1, 0);
-        private static final Vector3f WORLD_RIGHT = new Vector3f(1, 0, 0);
-        private static final Vector3f WORLD_FRONT = new Vector3f(0, 0, 1);
+        protected static final Vector3f WORLD_UP = new Vector3f(0, 1, 0);
+        protected static final Vector3f WORLD_RIGHT = new Vector3f(1, 0, 0);
+        protected static final Vector3f WORLD_FRONT = new Vector3f(0, 0, 1);
 
         private Orientation(Vector3f rotation) {
             update(rotation);
         }
 
-        private Vector3f getFront() {
+        public Vector3f getFront() {
             return new Vector3f(front);
         }
 
-        private Vector3f getRight() {
+        public Vector3f getRight() {
             return new Vector3f(right);
         }
 
-        private Vector3f getUp() {
+        public Vector3f getUp() {
             return new Vector3f(up);
         }
 
-        private void update(Vector3f rotation) {
+        public void update(Vector3f rotation) {
             update(rotation.x(), rotation.y(), rotation.z());
         }
 

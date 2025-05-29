@@ -14,9 +14,9 @@ import static org.lwjgl.opengl.GL46.*;
  */
 public class Mesh implements Component {
 
-    private final int vertexArrayObject;
-    private final int count;
-    private final ArrayList<Integer> buffers = new ArrayList<>();
+    protected final int vertexArrayObject;
+    protected final int count;
+    protected final ArrayList<Integer> buffers = new ArrayList<>();
 
     public Mesh(float[] vertexPositions, float[] vertexNormals, float[] vertexTexCoords, float[] vertexColors, int[] indices) {
         assert vertexPositions != null && indices != null;
@@ -76,11 +76,11 @@ public class Mesh implements Component {
         buffers.forEach(GL46::glDeleteBuffers);
     }
 
-    public static class Buffer implements Component {
+    public static class Object implements Component {
 
-        private final ArrayList<Mesh> meshes = new ArrayList<>();
+        protected final ArrayList<Mesh> meshes = new ArrayList<>();
 
-        public static Buffer create(String path) {
+        public static Object load(String path) {
             try (AIScene scene = Assimp.aiImportFile(FileUtil.getAbsoluteFilepath(path), Assimp.aiProcess_Triangulate)) {
                 if (scene == null)
                     throw new RuntimeException(Assimp.aiGetErrorString());
@@ -89,13 +89,13 @@ public class Mesh implements Component {
                 if (scene.mFlags() == Assimp.AI_SCENE_FLAGS_INCOMPLETE || (node = scene.mRootNode()) == null)
                     throw new RuntimeException(Assimp.aiGetErrorString());
 
-                Buffer root = new Buffer();
+                Object root = new Object();
                 processNode(scene, node, root);
                 return root;
             }
         }
 
-        private static void processNode(AIScene scene, AINode node, Buffer parent) {
+        protected static void processNode(AIScene scene, AINode node, Object parent) {
             for (int i = 0; i < node.mNumMeshes(); i++) {
                 AIMesh mesh = AIMesh.create(scene.mMeshes().get(node.mMeshes().get(i)));
                 parent.meshes.add(processMesh(mesh));
@@ -105,7 +105,7 @@ public class Mesh implements Component {
             }
         }
 
-        private static Mesh processMesh(AIMesh mesh) {
+        protected static Mesh processMesh(AIMesh mesh) {
             float[] posData = new float[mesh.mNumVertices() * 3];
             float[] cordData = new float[mesh.mNumVertices() * 2];
             AIVector3D.Buffer cordBuffer = mesh.mTextureCoords(0);

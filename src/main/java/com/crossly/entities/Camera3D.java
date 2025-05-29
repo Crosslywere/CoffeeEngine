@@ -14,12 +14,12 @@ import java.util.Optional;
  */
 public class Camera3D extends Entity implements Camera {
 
-    private Matrix4f projection;
+    protected Matrix4f projection;
 
-    private float aspectRatio;
-    private float fieldOfView = (float) Math.toRadians(45);
-    private Framebuffer framebuffer;
-    private Pair<ShaderProgram, String> shaderTexturePair = null;
+    protected float aspectRatio;
+    protected float fieldOfView = (float) Math.toRadians(45);
+    protected Framebuffer framebuffer;
+    protected Pair<ShaderProgram, String> shaderTexturePair = null;
 
     public Camera3D(int width, int height) {
         aspectRatio = (float) width / height;

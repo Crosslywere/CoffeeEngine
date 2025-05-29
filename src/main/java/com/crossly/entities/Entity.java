@@ -13,10 +13,10 @@ import java.util.*;
  */
 public class Entity {
 
-    private final Map<String, Component> components = new HashMap<>();
-    private final ArrayList<Entity> children = new ArrayList<>();
-    private final Transform transform = new Transform();
-    private String shaderKey = null;
+    protected final Map<String, Component> components = new HashMap<>();
+    protected final ArrayList<Entity> children = new ArrayList<>();
+    protected final Transform transform = new Transform();
+    protected String shaderKey = null;
 
     public Entity() {
     }

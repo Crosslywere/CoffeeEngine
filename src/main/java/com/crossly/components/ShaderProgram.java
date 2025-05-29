@@ -16,11 +16,11 @@ import static org.lwjgl.opengl.GL46.*;
  */
 public class ShaderProgram implements Component {
 
-    private final int program;
-    private final Map<String, Integer> uniformLocationCache = new HashMap<>();
-    private int projectionUniformLocation = -1;
-    private int viewUniformLocation = -1;
-    private int modelUniformLocation = -1;
+    protected final int program;
+    protected final Map<String, Integer> uniformLocationCache = new HashMap<>();
+    protected int projectionUniformLocation = -1;
+    protected int viewUniformLocation = -1;
+    protected int modelUniformLocation = -1;
 
     public ShaderProgram(String vertexSource, String fragmentSource) {
         this.program = builder()
@@ -29,7 +29,7 @@ public class ShaderProgram implements Component {
                 .build().program;
     }
 
-    private ShaderProgram(int program) {
+    protected ShaderProgram(int program) {
         this.program = program;
     }
 
@@ -145,11 +145,11 @@ public class ShaderProgram implements Component {
 
     public static class Builder {
         // To allow for multiple shader programs to be created from 1 builder create program when create is called.
-        private final int program;
+        protected final int program;
 
-        private final List<Integer> shaderParts = new ArrayList<>();
+        protected final List<Integer> shaderParts = new ArrayList<>();
 
-        private String projection = null, view = null, model = null;
+        protected String projection = null, view = null, model = null;
 
         public Builder() {
             program = glCreateProgram();
@@ -245,7 +245,7 @@ public class ShaderProgram implements Component {
             return shader;
         }
 
-        private static int compileShaderFromMemory(String src, int type) {
+        protected static int compileShaderFromMemory(String src, int type) {
             int shader = glCreateShader(type);
             glShaderSource(shader, src);
             glCompileShader(shader);
@@ -253,7 +253,7 @@ public class ShaderProgram implements Component {
             return shader;
         }
 
-        private static void validateShader(int shader) {
+        protected static void validateShader(int shader) {
             int[] success = new int[1];
             glGetShaderiv(shader, GL_COMPILE_STATUS, success);
             if (success[0] == 0) {
@@ -262,7 +262,7 @@ public class ShaderProgram implements Component {
             }
         }
 
-        private static void validateProgram(int program) {
+        protected static void validateProgram(int program) {
             int[] success = new int[1];
             glGetProgramiv(program, GL_LINK_STATUS, success);
             if (success[0] == 0) {
