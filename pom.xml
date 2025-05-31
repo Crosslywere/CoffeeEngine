@@ -14,6 +14,7 @@
     <groupId>org.crossly</groupId>
     <artifactId>CoffeeEngine</artifactId>
     <version>unversioned</version>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
@@ -22,7 +23,6 @@
         <lwjgl.version>3.3.6</lwjgl.version>
         <joml.version>1.10.7</joml.version>
         <joml-primitives.version>1.10.0</joml-primitives.version>
-        <lwjgl.natives>natives-linux</lwjgl.natives>
     </properties>
 
     <profiles>
@@ -132,4 +132,17 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
