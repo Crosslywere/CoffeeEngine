@@ -155,13 +155,11 @@ public class Transform implements SubComponent {
     }
 
     public static class Orientation {
-        protected final Vector3f front = new Vector3f();
-        protected final Vector3f right = new Vector3f();
-        protected final Vector3f up = new Vector3f();
+        protected Vector3f front = new Vector3f();
+        protected Vector3f right = new Vector3f();
+        protected Vector3f up = new Vector3f();
 
         protected static final Vector3f WORLD_UP = new Vector3f(0, 1, 0);
-        protected static final Vector3f WORLD_RIGHT = new Vector3f(1, 0, 0);
-        protected static final Vector3f WORLD_FRONT = new Vector3f(0, 0, 1);
 
         private Orientation(Vector3f rotation) {
             update(rotation);
