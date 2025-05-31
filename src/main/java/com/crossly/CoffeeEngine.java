@@ -27,24 +27,20 @@ public class CoffeeEngine {
         currentActiveCamera = camera;
     }
 
-    public static void run(Class<?> applicationClass) {
+    public static<T extends Application> void run(Class<T> applicationClass) {
         window = new Window();
         try {
-            Object instance = applicationClass.getConstructor().newInstance();
-            if (instance instanceof Application application) {
-                setWindowDimensions(application);
-                window.setTitle(application.getWindowTitle());
-                Timer.init();
-                while (window.isOpen() && application.isRunning()) {
-                    application.onUpdate(window.getInput());
-                    application.onRender();
-                    Timer.update();
-                }
-                application.onExit();
-                window.cleanup();
-            } else {
-                System.err.println(applicationClass.getName() + " must extend " + Application.class.getName());
+            Application instance = applicationClass.getConstructor().newInstance();
+            setWindowDimensions(instance);
+            window.setTitle(instance.getWindowTitle());
+            Timer.init();
+            while (window.isOpen() && instance.isRunning()) {
+                instance.onUpdate(window.getInput());
+                instance.onRender();
+                Timer.update();
             }
+            instance.onExit();
+            window.cleanup();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
