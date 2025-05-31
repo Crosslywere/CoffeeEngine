@@ -1,3 +1,5 @@
+# Goals
+
 - Implement rigged and dynamic meshes
 
 - Check out Artemis (https://thelinuxlich.github.io/artemis_CSharp/)
@@ -13,3 +15,9 @@
 - Implement default shader for entities(Use PBR)
 
 - Implement font rendering
+
+----
+# Real TODOs
+
+- Sort out inheritance of Components VS SubComponents
+- Implement reading values from framebuffers
