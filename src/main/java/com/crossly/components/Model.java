@@ -118,7 +118,7 @@ public class Model implements Component {
     @Override
     public void decrementReference() {
         referenceCount--;
-        if (referenceCount <= 0)
+        if (referenceCount == 0)
             cleanup();
     }
 }

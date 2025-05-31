@@ -16,6 +16,40 @@ import static org.lwjgl.opengl.GL46.*;
  */
 public class ShaderProgram implements Component {
 
+    protected static final ShaderProgram DEFAULT_2D_TEXTURING_SHADER = ShaderProgram.builder()
+            .attachVertexShader("""
+                    #version 330 core
+                    layout (location = 0) in vec3 aPosition;
+                    layout (location = 2) in vec2 aTexCoordinate;
+                    uniform mat4 uProjection;
+                    uniform mat4 uView;
+                    uniform mat4 uModel;
+                    out vec2 vTexCoordinate;
+                    void main() {
+                        vTexCoordinate = aTexCoordinate;
+                        gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
+                    }""")
+            .attachFragmentShader("""
+                    #version 330 core
+                    layout (location = 0) out vec4 oFragColor;
+                    uniform sampler2D uTexture;
+                    in vec2 vTexCoordinate;
+                    void main() {
+                        oFragColor = texture2D(uTexture, vTexCoordinate);
+                    }""")
+            .setProjection("uProjection")
+            .setView("uView")
+            .setModel("uModel")
+            .build();
+
+    public static ShaderProgram getDefault2dTexturingShader() {
+        return DEFAULT_2D_TEXTURING_SHADER;
+    }
+
+    public static ShaderProgram cloneDefaultTexturingShader() {
+        return (ShaderProgram) DEFAULT_2D_TEXTURING_SHADER.getReference();
+    }
+
     protected final int program;
     protected final Map<String, Integer> uniformLocationCache = new HashMap<>();
     protected int projectionUniformLocation = -1;
@@ -151,7 +185,7 @@ public class ShaderProgram implements Component {
     @Override
     public void decrementReference() {
         referenceCount--;
-        if (referenceCount <= 0)
+        if (referenceCount == 0)
             cleanup();
     }
 

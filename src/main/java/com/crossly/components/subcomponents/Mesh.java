@@ -12,6 +12,41 @@ import static org.lwjgl.opengl.GL46.*;
  */
 public class Mesh implements SubComponent {
 
+    protected static final Mesh DEFAULT_UNIT_Z_PLANE = new Mesh(
+            new float[] {
+                    -1, -1, 0,
+                     1, -1, 0,
+                     1,  1, 0,
+                    -1,  1, 0,
+            },
+            new float[] {
+                    0, 0, 1,
+                    0, 0, 1,
+                    0, 0, 1,
+                    0, 0, 1,
+            },
+            new float[] {
+                    0, 0,
+                    1, 0,
+                    1, 1,
+                    0, 1,
+            },
+            new float[] {
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+                    1, 1, 1,
+            },
+            new int[] {
+                    0, 1, 2,
+                    2, 3, 0
+            }
+    );
+
+    public static Mesh getDefaultUnitZPlane() {
+        return DEFAULT_UNIT_Z_PLANE;
+    }
+
     protected final int vertexArrayObject;
     protected final int count;
     protected final ArrayList<Integer> buffers = new ArrayList<>();
