@@ -1,36 +1,51 @@
 package com.crossly.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
- * @author Jude Ogboru
+ * @author Jude Ogboru (ChatGPT)
  */
 public class FileUtil {
 
     public static String getFileString(String path) {
-        return new String(getFileBytes(path));
+        return new String(getFileBytes(path), StandardCharsets.UTF_8);
     }
 
     public static byte[] getFileBytes(String path) {
-        try {
-            return Files.readAllBytes(Paths.get(getAbsoluteFilepath(path)));
+        try (InputStream in = FileUtil.class.getClassLoader().getResourceAsStream(path)) {
+            if (in == null) {
+                throw new FileNotFoundException("Resource not found: " + path);
+            }
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] chunk = new byte[4096];
+            int n;
+            while ((n = in.read(chunk)) != -1) {
+                buffer.write(chunk, 0, n);
+            }
+            return buffer.toByteArray();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to read resource: " + path, e);
         }
     }
 
-    public static String getAbsoluteFilepath(String path) {
-        var url = FileUtil.class.getClassLoader().getResource(path);
-        if (url != null)
-            return URLDecoder.decode(url.getFile().substring(System.getProperty("os.name").contains("Windows") ? 1 : 0), Charset.defaultCharset());
-        File file = new File(path);
-        if (!file.isFile())
-            throw new RuntimeException("File '" + path + "' does not exist!");
-        return file.getAbsolutePath();
+    public static File extractResourceToTempFile(String path, String prefix, String suffix) {
+        try (InputStream in = FileUtil.class.getClassLoader().getResourceAsStream(path)) {
+            if (in == null) {
+                throw new FileNotFoundException("Resource not found: " + path);
+            }
+
+            File tempFile = File.createTempFile(prefix, suffix);
+            tempFile.deleteOnExit();
+
+            try (OutputStream out = new FileOutputStream(tempFile)) {
+                out.write(in.readAllBytes());
+            }
+
+            return tempFile;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to extract resource to temp file: " + path, e);
+        }
     }
 }

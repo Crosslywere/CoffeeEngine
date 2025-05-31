@@ -5,6 +5,7 @@ import com.crossly.interfaces.Component;
 import com.crossly.util.FileUtil;
 import org.lwjgl.assimp.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +16,7 @@ public class Model implements Component {
     protected ArrayList<Mesh> meshes = new ArrayList<>();
     protected int referenceCount = 0;
 
-    public interface MeshLoader {
+    public interface MeshLoaderFn {
         default Mesh load(AIMesh mesh, AIScene scene) {
             float[] posData = new float[mesh.mNumVertices() * 3];
             float[] cordData = new float[mesh.mNumVertices() * 2];
@@ -58,24 +59,25 @@ public class Model implements Component {
         }
     }
 
-    protected MeshLoader loader;
+    protected MeshLoaderFn loader;
 
     public Model(String modelPath) {
-        this(modelPath, new MeshLoader() {
+        this(modelPath, new MeshLoaderFn() {
             @Override
             public Mesh load(AIMesh mesh, AIScene scene) {
-                return MeshLoader.super.load(mesh, scene);
+                return MeshLoaderFn.super.load(mesh, scene);
             }
         });
     }
 
-    public Model(String modelPath, MeshLoader loader) {
+    public Model(String modelPath, MeshLoaderFn loader) {
         this.loader = loader;
         load(modelPath);
     }
 
     protected void load(String path) {
-        try (AIScene scene = Assimp.aiImportFile(FileUtil.getAbsoluteFilepath(path), Assimp.aiProcess_Triangulate)) {
+        String tempFilepath = FileUtil.extractResourceToTempFile(path, "model-", path.substring(path.lastIndexOf('.'))).getAbsolutePath();
+        try (AIScene scene = Assimp.aiImportFile(tempFilepath, Assimp.aiProcess_Triangulate)) {
             if (scene == null)
                 throw new RuntimeException(Assimp.aiGetErrorString());
 
