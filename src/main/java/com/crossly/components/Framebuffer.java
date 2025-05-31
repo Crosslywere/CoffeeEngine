@@ -29,6 +29,13 @@ public class Framebuffer implements Component {
         glEnable(GL_DEPTH_TEST);
     }
 
+    // Enables blending
+    public static void enableBlendFuncOMSA_Add() {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquation(GL_FUNC_ADD);
+    }
+
     public static void cullBackFaces() {
         glEnable(GL_CULL_FACE);
     }

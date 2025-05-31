@@ -35,10 +35,6 @@ public class Window {
             throw new RuntimeException("glfwCreateWindow failed!");
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendEquation(GL_FUNC_ADD);
         glfwSetKeyCallback(window, new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
