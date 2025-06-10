@@ -1,20 +1,17 @@
-package com.crossly.timer;
+package com.crossly.coffee_engine.core;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
-/**
- * @author Jude Ogboru
- */
 public class Timer {
 
     private static float totalTime = 0f;
     private static float deltaTime = 0f;
 
-    public static void init() {
+    static void init() {
         totalTime = (float) glfwGetTime();
     }
 
-    public static void update() {
+    static void update() {
         float now;
         deltaTime = (now = (float) glfwGetTime()) - totalTime;
         totalTime = now;
