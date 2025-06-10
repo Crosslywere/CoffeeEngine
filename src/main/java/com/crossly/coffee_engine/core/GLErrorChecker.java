@@ -1,4 +1,4 @@
-package com.crossly.util;
+package com.crossly.coffee_engine.core;
 
 import static org.lwjgl.opengl.GL46.*;
 
