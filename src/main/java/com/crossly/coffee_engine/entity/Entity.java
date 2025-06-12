@@ -1,6 +1,7 @@
 package com.crossly.coffee_engine.entity;
 
 import com.crossly.coffee_engine.component.Component;
+import com.crossly.coffee_engine.component.OwnedComponent;
 import com.crossly.coffee_engine.component.Transform;
 
 import java.util.*;
@@ -22,11 +23,17 @@ public class Entity {
     }
 
     public final <Comp extends Component> void addComponent(Comp component) {
-        removeComponent(component.getClass());
-        components.put(component.getClass(), component.get());
-        if (component instanceof Transform && parent != null)
-            ((Transform) component)
-                    .setParent(parent.getComponent(Transform.class).orElse(null));
+        if (component instanceof OwnedComponent ownedComponent) {
+            if (ownedComponent.isOwned()) return;
+            removeComponent(ownedComponent.getClass());
+            components.put(ownedComponent.getClass(), ownedComponent);
+            if (ownedComponent instanceof Transform && parent != null)
+                ((Transform) ownedComponent)
+                        .setParent(parent.getComponent(Transform.class).orElse(null));
+        } else {
+            removeComponent(component.getClass());
+            components.put(component.getClass(), component.get());
+        }
     }
 
     public final <Comp extends Component> Optional<Comp> getComponent(Class<Comp> compType) {

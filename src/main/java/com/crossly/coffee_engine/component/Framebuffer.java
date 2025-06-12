@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public final class Framebuffer extends Component {
+public final class Framebuffer extends OwnedComponent {
     // -- Static Methods -- //
     public static void setClearColor(float red, float green, float blue) {
         glClearColor(red, green, blue, 1);
@@ -43,6 +43,10 @@ public final class Framebuffer extends Component {
         for (var textureAndAttachment : texturesAndAttachments) {
             var texture = textureAndAttachment.getFirst();
             var attachment = textureAndAttachment.getSecond();
+            if (texture == null) {
+                glDrawBuffer(GL_NONE);
+                continue;
+            }
             glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture.getTextureID(), 0);
             renderTextures.add(texture);
         }
@@ -126,9 +130,10 @@ public final class Framebuffer extends Component {
 
                     case DEPTH_ATTACHMENT_2D ->
                             texturesAndAttachments.add(new Pair<>(new Texture2D(width, height, GL_DEPTH_COMPONENT), GL_DEPTH_ATTACHMENT));
-
                 }
             }
+            if (colorAttachment == 0)
+                texturesAndAttachments.add(new Pair<>(null, 0));
             return new Framebuffer(texturesAndAttachments);
         }
     }

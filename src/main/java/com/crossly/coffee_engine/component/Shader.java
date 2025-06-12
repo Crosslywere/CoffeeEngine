@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public final class Shader extends Component {
+public final class Shader extends SharedComponent {
 
     private final int handle;
     private final Map<String, Integer> uniformCache = new HashMap<>();

@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public final class Transform extends Component {
+public final class Transform extends OwnedComponent {
 
     private Vector3f position;
     private Vector3f rotation;
@@ -122,10 +122,6 @@ public final class Transform extends Component {
     public Vector3f getFront() {
         return new Vector3f(orientation.front);
     }
-
-//    public void setFront(Vector3f front) {
-//        orientation.orientFront(front, getRadRoll());
-//    }
 
     public Vector3f getRight() {
         return new Vector3f(orientation.right);

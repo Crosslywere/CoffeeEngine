@@ -10,110 +10,13 @@ import java.util.Objects;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public abstract class Mesh extends Component {
+public abstract class Mesh extends SharedComponent {
 
     protected int handle = 0;
     protected final List<Integer> bufferObjects = new ArrayList<>();
     protected int vertexCount = 0;
     protected boolean drawElements = false;
     protected final List<Mesh> subMeshes = new ArrayList<>();
-
-//
-//    public Mesh() {}
-//
-//    public Mesh(float[] vertexData, Layout layout) {
-//        vertexCount = vertexData.length / layout.stride;
-//        drawElements = false;
-//        handle = glGenVertexArrays();
-//        glBindVertexArray(handle);
-//        int vbo = glGenBuffers();
-//        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-//        glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
-//        bufferObjects.add(vbo);
-//        int offset = 0;
-//        for (int i = 0; i < layout.sizes.size(); i++) {
-//            glVertexAttribPointer(i, layout.sizes.get(i), GL_FLOAT, false, layout.stride * Float.BYTES, (long) offset * Float.BYTES);
-//            glEnableVertexAttribArray(i);
-//            offset += layout.sizes.get(i);
-//        }
-//    }
-//
-//    public Mesh(float[] vertexData, int[] indicesData, Layout layout) {
-//        vertexCount = indicesData.length;
-//        drawElements = true;
-//        handle = glGenVertexArrays();
-//        glBindVertexArray(handle);
-//        int vbo = glGenBuffers();
-//        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-//        glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
-//        bufferObjects.add(vbo);
-//        int ebo = glGenBuffers();
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-//        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesData, GL_STATIC_DRAW);
-//        bufferObjects.add(ebo);
-//        int offset = 0;
-//        for (int i = 0; i < layout.sizes.size(); i++) {
-//            glVertexAttribPointer(i, layout.sizes.get(i), GL_FLOAT, false, layout.stride * Float.BYTES, (long) offset * Float.BYTES);
-//            glEnableVertexAttribArray(i);
-//            offset += layout.sizes.get(i);
-//        }
-//    }
-//
-//    public Mesh(Layout layout, int[] indicesData, float[] posData, float[]... vertexData) {
-//        vertexCount = indicesData.length;
-//        drawElements = true;
-//        handle = glGenVertexArrays();
-//        glBindVertexArray(handle);
-//        int ebo = glGenBuffers();
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-//        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesData, GL_STATIC_DRAW);
-//        bufferObjects.add(ebo);
-//        int posVbo = glGenBuffers();
-//        glBindBuffer(GL_ARRAY_BUFFER, posVbo);
-//        glBufferData(GL_ARRAY_BUFFER, posData, GL_STATIC_DRAW);
-//        glVertexAttribPointer(0, layout.sizes.getFirst(), GL_FLOAT, false, 0, 0L);
-//        glEnableVertexAttribArray(0);
-//        bufferObjects.add(posVbo);
-//        if (layout.sizes.size() != vertexData.length + 1)
-//            throw new RuntimeException("Layouts and vertex data array do not match!");
-//        for (int i = 1; i < layout.sizes.size(); i++) {
-//            if (vertexData[i - 1] == null) continue;
-//            int vbo = glGenBuffers();
-//            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-//            glBufferData(GL_ARRAY_BUFFER, vertexData[i - 1], GL_STATIC_DRAW);
-//            glVertexAttribPointer(i, layout.sizes.get(i), GL_FLOAT, false, 0, 0L);
-//            glEnableVertexAttribArray(i);
-//            bufferObjects.add(vbo);
-//        }
-//    }
-//
-//    public Mesh(Layout layout, float[] posData, float[]... vertexData) {
-//        vertexCount = posData.length / layout.sizes.getFirst();
-//        drawElements = false;
-//        handle = glGenVertexArrays();
-//        glBindVertexArray(handle);
-//        int posVbo = glGenBuffers();
-//        glBindBuffer(GL_ARRAY_BUFFER, posVbo);
-//        glBufferData(GL_ARRAY_BUFFER, posData, GL_STATIC_DRAW);
-//        glVertexAttribPointer(0, layout.sizes.getFirst(), GL_FLOAT, false, 0, 0L);
-//        glEnableVertexAttribArray(0);
-//        bufferObjects.add(posVbo);
-//        if (layout.sizes.size() != vertexData.length + 1)
-//            throw new RuntimeException("Layouts and vertex data array do not match!");
-//        for (int i = 1; i < layout.sizes.size(); i++) {
-//            if (vertexData[i - 1] == null) continue;
-//            int vbo = glGenBuffers();
-//            glBindBuffer(GL_ARRAY_BUFFER, vbo);
-//            glBufferData(GL_ARRAY_BUFFER, vertexData[i - 1], GL_STATIC_DRAW);
-//            glVertexAttribPointer(i, layout.sizes.get(i), GL_FLOAT, false, 0, 0L);
-//            glEnableVertexAttribArray(i);
-//            bufferObjects.add(vbo);
-//        }
-//    }
-//
-//    public Mesh(String meshPath) {
-//        loadMeshes(meshPath);
-//    }
 
     protected final void loadMeshes(String meshPath) {
         String tempFile = FileUtil.extractResourceToTempFile(

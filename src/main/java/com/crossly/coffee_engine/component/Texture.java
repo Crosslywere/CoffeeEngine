@@ -2,7 +2,7 @@ package com.crossly.coffee_engine.component;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public abstract class Texture extends Component {
+public abstract class Texture extends SharedComponent {
 
     protected final int handle;
 
