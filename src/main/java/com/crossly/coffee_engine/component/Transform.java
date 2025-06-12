@@ -39,6 +39,30 @@ public final class Transform extends Component {
         this.position = new Vector3f(position);
     }
 
+    public float getPositionX() {
+        return position.x();
+    }
+
+    public void setPositionX(float x) {
+        position.x = x;
+    }
+
+    public float getPositionY() {
+        return position.y();
+    }
+
+    public void setPositionY(float y) {
+        position.y = y;
+    }
+
+    public float getPositionZ() {
+        return position.z();
+    }
+
+    public void setPositionZ(float z) {
+        position.z = z;
+    }
+
     public Vector3f getRotation() {
         return new Vector3f(rotation);
     }
@@ -66,6 +90,33 @@ public final class Transform extends Component {
 
     public void setScale(Vector3f scale) {
         this.scale = new Vector3f(scale);
+    }
+
+    public float getPitch() {
+        return rotation.x();
+    }
+
+    public void setPitch(float pitch) {
+        rotation.x = pitch;
+        orientation.update(this);
+    }
+
+    public float getYaw() {
+        return rotation.y();
+    }
+
+    public void setYaw(float yaw) {
+        rotation.y = yaw;
+        orientation.update(this);
+    }
+
+    public float getRoll() {
+        return rotation.z();
+    }
+
+    public void setRoll(float roll) {
+        rotation.z = roll;
+        orientation.update(this);
     }
 
     public Vector3f getFront() {
