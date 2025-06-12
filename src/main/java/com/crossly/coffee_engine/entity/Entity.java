@@ -22,6 +22,7 @@ public class Entity {
     }
 
     public final <Comp extends Component> void addComponent(Comp component) {
+        removeComponent(component.getClass());
         components.put(component.getClass(), component.get());
         if (component instanceof Transform && parent != null)
             ((Transform) component)
@@ -29,9 +30,7 @@ public class Entity {
     }
 
     public final <Comp extends Component> Optional<Comp> getComponent(Class<Comp> compType) {
-        if (components.containsKey(compType))
-            return Optional.of((Comp) components.get(compType));
-        return Optional.empty();
+        return Optional.ofNullable(compType.cast(components.get(compType)));
     }
 
     public final <Comp extends Component> void removeComponent(Class<Comp> compType) {
