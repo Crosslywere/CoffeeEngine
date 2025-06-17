@@ -69,6 +69,24 @@ public class Entity {
         }
     }
 
+    public final void addChildren(Entity... children) {
+        for (var child : children)
+            addChild(child);
+    }
+
+    public final void addChildren(List<Entity> children) {
+        for (var child : children)
+            addChild(child);
+    }
+
+    public final Entity getChild(int index) {
+        return children.get(index);
+    }
+
+    public final List<Entity> getChildren() {
+        return children;
+    }
+
     public final void setUpdateCallback(UpdateCallback callback) {
         updateCallback = callback;
     }
