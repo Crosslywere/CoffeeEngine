@@ -130,4 +130,13 @@ public class Camera extends Entity {
         if (getComponent(Shader.class).isPresent())
             getComponent(Framebuffer.class).ifPresent(Framebuffer::bind);
     }
+
+    public void drawToFramebuffer(Entity... entities) {
+        bindFramebuffer();
+        Framebuffer.clear();
+        for (var entity : entities) {
+            entity.renderStack();
+        }
+        Framebuffer.unbind();
+    }
 }
