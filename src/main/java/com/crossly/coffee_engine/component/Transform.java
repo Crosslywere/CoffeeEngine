@@ -3,6 +3,7 @@ package com.crossly.coffee_engine.component;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public final class Transform extends OwnedComponent {
 
@@ -17,6 +18,14 @@ public final class Transform extends OwnedComponent {
         rotation = new Vector3f();
         scale = new Vector3f(1);
         orientation = new Orientation(this);
+    }
+
+    public Transform(Vector3f position) {
+        this(position, new Vector3f());
+    }
+
+    public Transform(Vector3f position, Vector3f rotation) {
+        this(position, rotation, new Vector3f(1));
     }
 
     public Transform(Vector3f position, Vector3f rotation, Vector3f scale) {
@@ -133,6 +142,11 @@ public final class Transform extends OwnedComponent {
 
     public void setParent(Transform transform) {
         this.parent = transform;
+    }
+
+    public Vector3f getWorldPosition() {
+        var posVec4 = new Vector4f(getPosition(), 1).mul(getModelMatrix());
+        return posVec4.xyz(new Vector3f());
     }
 
     public Matrix4f getModelMatrix() {
