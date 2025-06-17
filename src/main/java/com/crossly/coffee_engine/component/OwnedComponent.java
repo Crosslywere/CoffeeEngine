@@ -29,6 +29,7 @@ public abstract class OwnedComponent extends Component {
 
     @Override
     public final void delete() {
+        this.owner = null;
         cleanup();
     }
 
