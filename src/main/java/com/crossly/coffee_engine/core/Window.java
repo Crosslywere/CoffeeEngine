@@ -20,7 +20,8 @@ class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        if (!app.isResizable())
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
         long monitor = getMonitorAtIndex(app.getMonitorIndex() - 1);
         windowHandle = glfwCreateWindow(app.getWidth(), app.getHeight(), app.getTitle(), app.isFullscreen() ? monitor : 0, 0);
         if (windowHandle == 0) {

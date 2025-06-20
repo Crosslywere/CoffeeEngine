@@ -9,6 +9,7 @@ public abstract class Application {
     private String title = "CoffeeEngine";
     private boolean vsync = true, fullscreen = false;
     private int monitorIndex = 0;
+    private boolean resizable = false;
     private Window window = null;
 
     public Application() {}
@@ -92,6 +93,14 @@ public abstract class Application {
         this.monitorIndex = monitorIndex;
         if (window != null)
             window.setMonitor(this);
+    }
+
+    public final boolean isResizable() {
+        return resizable;
+    }
+
+    public final void setResizable(boolean resizable) {
+        this.resizable = resizable;
     }
 
     public void onCreate() {}
