@@ -2,26 +2,29 @@ package com.crossly.coffee_engine.core;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
+/**
+ * @author Jude Ogboru
+ */
 public class Timer {
 
-    private static float totalTime = 0f;
-    private static float deltaTime = 0f;
+	private static float totalTime = 0f;
+	private static float deltaTime = 0f;
 
-    static void init() {
-        totalTime = (float) glfwGetTime();
-    }
+	static void init() {
+		totalTime = (float) glfwGetTime();
+	}
 
-    static void update() {
-        float now;
-        deltaTime = (now = (float) glfwGetTime()) - totalTime;
-        totalTime = now;
-    }
+	static void update() {
+		float now;
+		deltaTime = (now = (float) glfwGetTime()) - totalTime;
+		totalTime = now;
+	}
 
-    public static float getDeltaTime() {
-        return deltaTime;
-    }
+	public static float getDeltaTime() {
+		return deltaTime;
+	}
 
-    public static float getTotalTime() {
-        return totalTime;
-    }
+	public static float getTotalTime() {
+		return totalTime;
+	}
 }
