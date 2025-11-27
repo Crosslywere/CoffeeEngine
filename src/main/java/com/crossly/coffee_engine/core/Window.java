@@ -7,6 +7,8 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 
+import com.crossly.coffee_engine.component.graphics.Framebuffer;
+
 /**
  * @author Jude Ogboru
  */
@@ -80,6 +82,7 @@ final class Window {
 		Timer.update();
 		glfwSwapBuffers(windowHandle);
 		glfwPollEvents();
+		Framebuffer.clear();
 		return !glfwWindowShouldClose(windowHandle);
 	}
 
