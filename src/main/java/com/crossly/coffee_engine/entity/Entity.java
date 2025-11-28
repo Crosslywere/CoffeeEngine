@@ -45,6 +45,10 @@ public class Entity {
 		}
 	}
 
+	public final void addComponents(Component ... components) {
+		Stream.of(components).forEach(component -> addComponent(component));
+	}
+
 	public final <Comp extends Component> Optional<Comp> getComponent(Class<Comp> compType) {
 		return Optional.ofNullable(compType.cast(components.get(compType)));
 	}

@@ -6,10 +6,10 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import com.crossly.coffee_engine.component.Component;
 import com.crossly.coffee_engine.component.Transform;
-import com.crossly.coffee_engine.component.graphics.GraphicsShader;
-
 /**
+ * An entity that represents a camera with a view and projection matrix.
  * @author Jude Ogboru
  */
 public class Camera extends Entity {
@@ -34,14 +34,14 @@ public class Camera extends Entity {
 		this(displayAspect.x(), displayAspect.y());
 	}
 
-	public Camera(float width, float height, GraphicsShader shader) {
+	public Camera(float width, float height, Component ... components) {
 		this(width, height);
-		addComponent(shader);
+		addComponents(components);
 	}
 
-	public Camera(Vector2f displayAspect, GraphicsShader shader) {
+	public Camera(Vector2f displayAspect, Component ... components) {
 		this(displayAspect);
-		addComponent(shader);
+		addComponents(components);
 	}
 
 	public Matrix4f getProjection2D() {
@@ -69,7 +69,7 @@ public class Camera extends Entity {
 		var transform = getComponent(Transform.class).orElse(null);
 		if (transform != null)
 			return new Matrix4f().lookAt(transform.getPosition(), transform.getPosition().add(transform.getFront()),
-					transform.getUp());
+				transform.getUp());
 		return new Matrix4f();
 	}
 
