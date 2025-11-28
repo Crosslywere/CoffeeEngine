@@ -2,7 +2,6 @@ package com.crossly.coffee_engine.component.graphics;
 
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.stb.STBImage.*;
-import static org.lwjgl.stb.STBImage.stbi_image_free;
 
 /**
  * @author Jude Ogboru
@@ -10,12 +9,14 @@ import static org.lwjgl.stb.STBImage.stbi_image_free;
 public final class Texture2D extends Texture {
 
 	private final int width, height;
+	private int textureFormat;
 
 	public Texture2D(String imagePath) {
 		this(imagePath, false);
 	}
 
 	public Texture2D(String imagePath, boolean flipVertical) {
+		textureFormat = GL_RGBA;
 		glBindTexture(GL_TEXTURE_2D, handle);
 		int[] w = new int[1], h = new int[1], ch = new int[1];
 		stbi_set_flip_vertically_on_load(flipVertical);
@@ -40,15 +41,16 @@ public final class Texture2D extends Texture {
 		this(width, height, formats, formats, GL_UNSIGNED_BYTE);
 	}
 
-	public Texture2D(int width, int height, int format, int internalFormat, int dataType) {
+	public Texture2D(int width, int height, int internalFormat, int format, int dataType) {
 		this.width = width;
 		this.height = height;
+		this.textureFormat = format;
 		glBindTexture(GL_TEXTURE_2D, handle);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, internalFormat, dataType, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, 0);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -61,9 +63,25 @@ public final class Texture2D extends Texture {
 		return height;
 	}
 
+	public int getTextureFormat() {
+		return textureFormat;
+	}
+
 	@Override
 	public void bind(int index) {
 		glActiveTexture(GL_TEXTURE0 + index);
 		glBindTexture(GL_TEXTURE_2D, handle);
+	}
+
+	public static Texture2D createColorRenderTexture(int width, int height) {
+		return new Texture2D(width, height);
+	}
+
+	public static Texture2D createDepthRenderTexture(int width, int height) {
+		return new Texture2D(width, height, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT);
+	}
+
+	public static Texture2D createDepthStencilRenderTexture(int width, int height) {
+		throw new UnsupportedOperationException("'createDepthStencilRenderTexture' has not been implemented!");
 	}
 }

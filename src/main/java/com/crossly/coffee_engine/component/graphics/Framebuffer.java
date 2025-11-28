@@ -2,6 +2,7 @@ package com.crossly.coffee_engine.component.graphics;
 
 import com.crossly.coffee_engine.component.OwnedComponent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -41,10 +42,21 @@ public abstract class Framebuffer extends OwnedComponent {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	private int width, height;
-	protected int handle;
+	public static void setRenderModeFill() {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 
-	protected List<Texture> renderTextures;
+	public static void setRenderModeLine() {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	private int width, height;
+	private int handle;
+
+	private List<Texture> renderTextures = new ArrayList<>();
+	private int colorAttachmentCount = 0;
+
+	public Framebuffer() {}
 
 	protected Framebuffer(int width, int height) {
 		this.width = width;
@@ -76,8 +88,20 @@ public abstract class Framebuffer extends OwnedComponent {
 	}
 
 	protected final void addToRenderTextures(Texture texture) {
-		if (renderTextures.isEmpty() || !renderTextures.contains(texture))
+		if (renderTextures.isEmpty() || !renderTextures.contains(texture)) {
 			renderTextures.add(texture);
+			if (texture instanceof Texture2D texture2d) {
+				glFramebufferTexture2D(GL_FRAMEBUFFER,
+					texture2d.getTextureFormat() == GL_DEPTH_COMPONENT ? GL_DEPTH_ATTACHMENT
+						: texture2d.getTextureFormat() == GL_DEPTH_STENCIL ? GL_DEPTH_STENCIL_ATTACHMENT
+							: GL_COLOR_ATTACHMENT0 + colorAttachmentCount++,
+					GL_TEXTURE_2D, texture2d.getTextureID(), 0);
+			}
+		}
+	}
+
+	public List<Texture> getRenderTextures() {
+		return renderTextures;
 	}
 
 	protected final void addToRenderTextures(Texture... textures) {
