@@ -51,12 +51,20 @@ public final class Transform extends OwnedComponent {
 		this.position = new Vector3f(position);
 	}
 
+	public void addPosition(Vector3f offset) {
+		position = position.add(offset);
+	}
+
 	public float getPositionX() {
 		return position.x();
 	}
 
 	public void setPositionX(float x) {
 		position.x = x;
+	}
+
+	public void addPositionX(float offset) {
+		position.x += offset;
 	}
 
 	public float getPositionY() {
@@ -67,6 +75,10 @@ public final class Transform extends OwnedComponent {
 		position.y = y;
 	}
 
+	public void addPositionY(float offset) {
+		position.y += offset;
+	}
+
 	public float getPositionZ() {
 		return position.z();
 	}
@@ -75,12 +87,21 @@ public final class Transform extends OwnedComponent {
 		position.z = z;
 	}
 
+	public void addPositionZ(float offset) {
+		position.z += offset;
+	}
+
 	public Vector3f getRotation() {
 		return new Vector3f(rotation);
 	}
 
 	public void setRotation(Vector3f rotation) {
 		this.rotation = new Vector3f(rotation);
+		orientation.update(this);
+	}
+
+	public void addRotation(Vector3f offset) {
+		rotation = rotation.add(offset);
 		orientation.update(this);
 	}
 
@@ -104,12 +125,21 @@ public final class Transform extends OwnedComponent {
 		this.scale = new Vector3f(scale);
 	}
 
+	public void addScale(Vector3f offset) {
+		scale.add(offset);
+	}
+
 	public float getPitch() {
 		return rotation.x();
 	}
 
 	public void setPitch(float pitch) {
 		rotation.x = pitch;
+		orientation.update(this);
+	}
+
+	public void addPitch(float offset) {
+		rotation.x += offset;
 		orientation.update(this);
 	}
 
@@ -122,12 +152,22 @@ public final class Transform extends OwnedComponent {
 		orientation.update(this);
 	}
 
+	public void addYaw(float offset) {
+		rotation.y += offset;
+		orientation.update(this);
+	}
+
 	public float getRoll() {
 		return rotation.z();
 	}
 
 	public void setRoll(float roll) {
 		rotation.z = roll;
+		orientation.update(this);
+	}
+
+	public void addRoll(float offset) {
+		rotation.z += offset;
 		orientation.update(this);
 	}
 
@@ -176,8 +216,8 @@ public final class Transform extends OwnedComponent {
 
 	private static class Orientation {
 		private Vector3f front;
-		private final Vector3f right;
-		private final Vector3f up;
+		private Vector3f right;
+		private Vector3f up;
 		private static final Vector3f WORLD_UP = new Vector3f(0, 1, 0);
 
 		private Orientation(Transform transform) {
@@ -188,17 +228,17 @@ public final class Transform extends OwnedComponent {
 		}
 
 		private void update(Transform transform) {
-			front = new Vector3f(0, 0, 1)
-					.rotateX(transform.getRadPitch())
-					.rotateZ(transform.getRadYaw());
-			orientFront(front, transform.getRadRoll());
+			front = new Vector3f(0, 0, 1).rotate(new Quaternionf(0, 0, 0, 1).rotateZYX(0,
+					transform.getRadYaw(), transform.getRadPitch()));
+			orientFront(front, 0);
 		}
 
 		private void orientFront(Vector3f dir, float roll) {
-			this.front = new Vector3f(dir).normalize();
-			front.cross(WORLD_UP, right);
-			right.rotateZ(roll).normalize();
-			right.cross(front, up);
+			front = new Vector3f(dir).normalize();
+			right = front.cross(WORLD_UP, right);
+			right = right.rotateZ(roll).normalize();
+			up = right.cross(front, up);
+			up = up.normalize();
 		}
 	}
 }
