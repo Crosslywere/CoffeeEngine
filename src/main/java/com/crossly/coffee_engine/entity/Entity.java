@@ -1,5 +1,8 @@
 package com.crossly.coffee_engine.entity;
 
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+
 import com.crossly.coffee_engine.component.Component;
 import com.crossly.coffee_engine.component.OwnedComponent;
 import com.crossly.coffee_engine.component.Transform;
@@ -7,6 +10,8 @@ import com.crossly.coffee_engine.component.Transform;
 import java.util.*;
 
 /**
+ * A class that composes of {@code Component}'s and 2 callback methods for rendering and updating.
+ * It also can references a parent entity and a list of children entities.
  * @author Jude Ogboru
  */
 public class Entity {
@@ -14,13 +19,13 @@ public class Entity {
 	private final Map<Class<? extends Component>, Component> components = new HashMap<>();
 	private Entity parent = null;
 	private final List<Entity> children = new ArrayList<>();
-	private UpdateCallback updateCallback = null;
-	private RenderCallback renderCallback = null;
+	private Consumer<Entity> updateCallback = null;
+	private Consumer<Entity> renderCallback = null;
 
-	public Entity() {
+	protected Entity() {
 	}
 
-	public Entity(Component... components) {
+	protected Entity(Component... components) {
 		for (var component : components)
 			addComponent(component);
 	}
@@ -103,17 +108,17 @@ public class Entity {
 		return children;
 	}
 
-	public final void setUpdateCallback(UpdateCallback callback) {
+	public final void setUpdateCallback(Consumer<Entity> callback) {
 		updateCallback = callback;
 	}
 
-	public final void setRenderCallback(RenderCallback callback) {
+	public final void setRenderCallback(Consumer<Entity> callback) {
 		renderCallback = callback;
 	}
 
 	public final void update() {
 		if (updateCallback != null)
-			updateCallback.invoke(this);
+			updateCallback.accept(this);
 	}
 
 	public final void updateStack() {
@@ -123,7 +128,7 @@ public class Entity {
 
 	public final void render() {
 		if (renderCallback != null)
-			renderCallback.invoke(this);
+			renderCallback.accept(this);
 	}
 
 	public final void renderStack() {
@@ -144,9 +149,9 @@ public class Entity {
 	}
 
 	public static Entity create(Component... components) {
-		var entity = new Entity(new Transform());
-		for (var component : components)
-			entity.addComponent(component);
+		var entity = new Entity(components);
+		if (!Stream.of(components).anyMatch(component -> component instanceof Transform))
+			entity.addComponent(new Transform());
 		return entity;
 	}
 }
