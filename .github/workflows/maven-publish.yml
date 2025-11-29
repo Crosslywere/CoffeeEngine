@@ -33,6 +33,9 @@ jobs:
         with:
           java-version: '24'
           distribution: 'temurin'
+          maven-settings-xml-known-hosts: 'github.com'
+          maven-settings-xml-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: maven
           server-id: github
           server-username: ${{ github.actor }}
           server-password: ${{ secrets.GITHUB_TOKEN }}
