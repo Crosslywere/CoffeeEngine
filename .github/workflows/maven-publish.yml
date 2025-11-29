@@ -1,0 +1,45 @@
+name: Publish Package to Github Packages
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    strategy:
+      matrix:
+        profile: [ windows, linux ]
+        os: [ windows-latest, ubuntu-latest ]
+        exclude:
+          - profile: windows
+            os: ubuntu-latest
+          - profile: linux
+            os: windows-latest
+
+    runs-on: ${{ matrix.os }}
+    name: Depoy ${{ matrix.profile }} artifact
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/checkout@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          server-id: github
+          server-username: ${{ github.actor }}
+          server-password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to Github Packages
+        run: mvn deploy -DskipTest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
