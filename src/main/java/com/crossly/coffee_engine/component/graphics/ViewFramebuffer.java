@@ -28,6 +28,14 @@ public class ViewFramebuffer extends Framebuffer {
 
 	@Override
 	protected void resize() {
+	}
 
+	@Override
+	protected void clearData() {
+		Framebuffer.clear();
+	}
+
+	@Override
+	protected void bindBuffers() {
 	}
 }

@@ -116,11 +116,21 @@ public abstract class Framebuffer extends OwnedComponent {
 	}
 
 	public final void bind() {
-		glBindFramebuffer(GL_FRAMEBUFFER, handle);
 		glViewport(0, 0, width, height);
+		glBindFramebuffer(GL_FRAMEBUFFER, handle);
+		bindBuffers();
+	}
+
+	public final void bindAndClear() {
+		bind();
+		clearData();
 	}
 
 	protected abstract void resize();
+
+	protected abstract void clearData();
+
+	protected abstract void bindBuffers();
 
 	@Override
 	protected void cleanup() {
