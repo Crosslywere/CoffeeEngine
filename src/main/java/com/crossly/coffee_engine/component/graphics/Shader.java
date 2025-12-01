@@ -62,6 +62,6 @@ public abstract class Shader extends SharedComponent {
 
 	@Override
 	protected void cleanup() {
-		glDeleteShader(handle);
+		glDeleteProgram(handle);
 	}
 }
