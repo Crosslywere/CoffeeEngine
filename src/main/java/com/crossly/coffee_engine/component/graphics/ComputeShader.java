@@ -1,6 +1,5 @@
 package com.crossly.coffee_engine.component.graphics;
 
-import static org.lwjgl.opengl.GL20.glDeleteShader;
 import static org.lwjgl.opengl.GL43.*;
 
 /**
